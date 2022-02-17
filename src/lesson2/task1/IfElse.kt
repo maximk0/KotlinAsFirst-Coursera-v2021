@@ -3,7 +3,9 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
@@ -68,7 +70,11 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * Мой возраст. Для заданного 0 < n < 200, рассматриваемого как возраст человека,
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
-fun ageDescription(age: Int): String = TODO()
+fun ageDescription(age: Int): String =
+    if (age in 5..20 || age == 111) "$age лет"
+    else if (age % 10 in 2..4) "$age года"
+    else if (age % 10 == 1) "$age год"
+    else "$age лет"
 
 /**
  * Простая (2 балла)
@@ -81,7 +87,24 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = TODO()
+): Double {
+    var s = (v1 * t1 + v2 * t2 + v3 * t3) / 2
+    var a: Double = s / v1
+    var a2: Double
+    if (a <= t1) {
+        println("$a")
+        return a
+    } else a = t1
+    a2 = ((s - (t1 * v1)) / v2)
+    if (a2 <= t2) {
+        a += a2
+        println("$a")
+        return a
+    } else a += t2
+    a += ((s - (v1 * t1) - (v2 * t2)) / v3)
+    println("$a")
+    return a
+}
 
 /**
  * Простая (2 балла)
@@ -92,11 +115,20 @@ fun timeForHalfWay(
  * и 3, если угроза от обеих ладей.
  * Считать, что ладьи не могут загораживать друг друга
  */
+
 fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {
+    if ((rookX1 == kingX || rookY1 == kingY) && (rookX2 == kingX || rookY2 == kingY))
+        return 3
+    else if (rookX1 == kingX || rookY1 == kingY)
+        return 1
+    else if (rookX2 == kingX || rookY2 == kingY)
+        return 2
+    else return 0
+}
 
 /**
  * Простая (2 балла)
@@ -112,7 +144,15 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int {
+    if ((rookX == kingX || rookY == kingY) && abs(kingX - bishopX) == abs(kingY - bishopY))
+        return 3
+    else if (abs(kingX - bishopX) == abs(kingY - bishopY))
+        return 2
+    else if (rookX == kingX || rookY == kingY)
+        return 1
+    else return 0
+}
 
 /**
  * Простая (2 балла)
@@ -122,7 +162,32 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    var max: Double
+    var min1: Double
+    var min2: Double
+    var t1: Double
+    var t2: Double
+    if ((a + b > c) && (a + c > b) && (b + c > a)) {
+        if (a < b) {
+            min2 = a
+            min1 = b
+        } else {
+            min2 = b
+            min1 = a
+        }
+        if (min1 < c) max = c
+        else {
+            max = min1
+            min1 = c
+        }
+        t1 = max.pow(2)
+        t2 = min1.pow(2) + min2.pow(2)
+        if (t1 < t2) return 0
+        else if (t1 == t2) return 1
+        else return 2
+    } else return -1
+}
 
 /**
  * Средняя (3 балла)
@@ -132,4 +197,15 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    if ((c <= b) && (d > b) && (d > a)) {
+        if (c < a) return b - a
+        else return b - c
+    }else if ((c > a) && (d < b) && (b > c)) return d - c
+    else if ((c <= b) && (d < b) && (d > a)) return d - a
+    else return -1
+}
+
+fun main() {
+    println(timeForHalfWay(4.0, 3.0, 1.0, 4.0, 1.0, 6.0))
+}
